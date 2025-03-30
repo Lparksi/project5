@@ -1,11 +1,8 @@
-archives:
-  - format: binary    # 使用二进制格式，不进行压缩
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
-    files:
-      - ./gin-frontend  # 确保只包含二进制文件
-    
+project_name: gin-frontend
+
 builds:
   - binary: "{{ .ProjectName }}"
+    main: ./main.go
     goos:
       - linux
       - windows
@@ -15,6 +12,26 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+
+archives:
+  - format: binary
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
 
 release:
-  prerelease: "{{ .Tag | contains `-rc` }}"  # 如果标签包含 `-rc`，标记为预发布
+  prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
+  github:
+    draft: false
+    prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
