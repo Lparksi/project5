@@ -17,14 +17,13 @@ builds:
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
-    ignore:
-      - goos: windows
-        goarch: arm64
+    mod_timestamp: '{{ .CommitTimestamp }}'
 
 archives:
   - format: binary
     name_template: >-
-      {{- .ProjectName }}_{{- if .IsSnapshot }}snapshot{{- else }}{{- .Version }}{{- end }}_
+      {{ .ProjectName }}_
+      {{- if .IsSnapshot }}snapshot{{ else }}{{ .Version }}{{ end }}_
       {{- .Os }}_{{- .Arch }}
     files: []
 
@@ -34,19 +33,21 @@ checksum:
 
 release:
   mode: replace
+  draft: false
   prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
-  github:
-    owner: "{{.Env.GITHUB_REPOSITORY_OWNER}}"
-    name: "{{.Env.GITHUB_REPOSITORY}}"
-    draft: false
-    prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
 
 changelog:
   use: github
-  sort: asc
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+    - title: Bug fixes
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+    - title: Others
+      regexp: '^.*?(build|chore|ci|docs|style|refactor|perf|test)(\([[:word:]]+\))??!?:.+$'
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
       - Merge pull request
       - Merge branch
+      - '^docs:'
+      - '^test:'

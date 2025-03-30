@@ -57,9 +57,10 @@ jobs:
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: latest  # 使用最新版本以支持 version: 2
+          version: ~> v1.24  # 使用 1.24+ 版本，支持 version 2
           args: >-
             ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
             'release --clean' }}
+          workdir: gin-frontend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
