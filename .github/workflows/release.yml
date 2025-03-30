@@ -23,7 +23,7 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5 # Update to latest stable version
         with:
-          version: latest
+          version: '~> v2' # Specify GoReleaser v2.x to match config version
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
