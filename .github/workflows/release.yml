@@ -12,6 +12,7 @@ on:
         options:
           - build-only
           - release
+          - prerelease
         default: 'build-only'
       version:
         description: '发布版本 (仅在选择 release 时需要，格式如 v1.0.0)'
@@ -54,17 +55,23 @@ jobs:
       - name: Create git tag if not exists
         run: |
           if ! git describe --tags --exact-match &>/dev/null; then
-            echo "No existing tag found, creating v0.1.0"
-            git tag v0.1.0
+            # 获取最新标签版本并递增
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            MAJOR=$(echo $LATEST_TAG | cut -d. -f1 | tr -d 'v')
+            MINOR=$(echo $LATEST_TAG | cut -d. -f2)
+            PATCH=$(echo $LATEST_TAG | cut -d. -f3)
+            NEW_TAG="v$MAJOR.$MINOR.$((PATCH+1))"
+            echo "No existing tag found for commit, creating $NEW_TAG"
+            git tag $NEW_TAG
           fi
 
       - name: Set Release Version
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'release'
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.release_type == 'release' || github.event.inputs.release_type == 'prerelease')
         run: |
           if [[ ! -z "${{ github.event.inputs.version }}" ]]; then
             git tag ${{ github.event.inputs.version }}
           else
-            echo "Error: Version is required for release mode"
+            echo "Error: Version is required for release/prerelease mode"
             exit 1
           fi
 
@@ -73,7 +80,10 @@ jobs:
         with:
           distribution: goreleaser
           version: v1.26.2
-          args: ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' || 'release --clean' }}
+          args: >-
+            ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
+            github.event.inputs.release_type == 'prerelease' && 'release --clean --prerelease' ||
+            'release --clean' }}
           workdir: gin-frontend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
