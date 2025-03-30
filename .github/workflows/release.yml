@@ -81,9 +81,9 @@ jobs:
           distribution: goreleaser
           version: v1.26.2
           args: >-
-            ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot --skip-compress' ||
-            github.event.inputs.release_type == 'prerelease' && 'release --clean --skip-compress --prerelease' ||
-            'release --clean --skip-compress' }}
+            ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
+            github.event.inputs.release_type == 'prerelease' && 'release --clean --prerelease' ||
+            'release --clean' }}
           workdir: gin-frontend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

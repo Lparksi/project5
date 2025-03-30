@@ -1,0 +1,15 @@
+archives:
+  - format: binary    # 使用二进制格式，不进行压缩
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    
+builds:
+  - binary: "{{ .ProjectName }}"
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
