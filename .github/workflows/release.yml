@@ -75,13 +75,17 @@ jobs:
             exit 1
           fi
 
+      - name: Ensure Build Directory Exists
+        if: github.event.inputs.release_type == 'build-only'
+        run: mkdir -p gin-frontend/dist/
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: v1.26.2
           args: >-
-            ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
+            ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot --output gin-frontend/dist/' ||
             github.event.inputs.release_type == 'prerelease' && 'release --clean --prerelease' ||
             'release --clean' }}
           workdir: gin-frontend
@@ -97,6 +101,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: goreleaser-binaries
-          path: gin-frontend/dist/gin-frontend_*
+          path: gin-frontend/dist/*
           if-no-files-found: error
           compression-level: 0
