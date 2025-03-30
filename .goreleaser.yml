@@ -4,7 +4,8 @@ version: 2
 # Make sure to check the documentation at https://goreleaser.com
 before:
   hooks:
-    - cd ./gin-frontend && go mod tidy
+    # Change directory and run go mod tidy within a shell
+    - sh -c 'cd ./gin-frontend && go mod tidy'
 builds:
   - id: gin-frontend
     main: ./gin-frontend/main.go
