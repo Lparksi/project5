@@ -93,6 +93,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: goreleaser-binaries
-          path: gin-frontend/dist/*/gin-frontend_*/*
+          path: |
+            gin-frontend/dist/*-snapshot/*
           if-no-files-found: error
           compression-level: 0  # 禁用压缩
