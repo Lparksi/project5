@@ -47,6 +47,11 @@ jobs:
               echo "Error: Version must follow semantic versioning format (vX.Y.Z or vX.Y.Z-rcN)"
               exit 1
             fi
+            # 确保版本标签格式严格正确
+            if [[ "${{ github.event.inputs.version }}" =~ \.\. ]] || [[ "${{ github.event.inputs.version }}" =~ \.$ ]]; then
+              echo "Error: Version tag contains invalid dots (consecutive or trailing)"
+              exit 1
+            fi
             if git rev-parse "${{ github.event.inputs.version }}" >/dev/null 2>&1; then
               echo "Warning: Tag ${{ github.event.inputs.version }} already exists. Skipping tag creation."
             else
