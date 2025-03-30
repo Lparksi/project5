@@ -1,5 +1,9 @@
 version: 2
 
+before:
+  hooks:
+    - go mod tidy
+
 builds:
   - binary: gin-frontend
     main: ./main.go
@@ -13,6 +17,10 @@ builds:
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
 
 archives:
   - format: tar.gz
@@ -20,9 +28,15 @@ archives:
       - goos: windows
         format: zip
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    replacements:
+      amd64: x86_64
+      darwin: macOS
+      linux: Linux
+      windows: Windows
 
 checksum:
   name_template: 'checksums.txt'
+  algorithm: sha256
 
 changelog:
   sort: asc
@@ -30,3 +44,10 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+      - '^chore:'
+
+release:
+  github:
+    owner: your-github-username
+    name: gin-frontend
+  prerelease: auto
