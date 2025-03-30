@@ -7,6 +7,10 @@ read -p "Enter the version number: " version
 echo "Generating changelog..."
 git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..HEAD > changelog.txt
 
+# Install goreleaser
+echo "Installing goreleaser..."
+go install github.com/goreleaser/goreleaser@latest
+
 # Run goreleaser
 echo "Running goreleaser..."
 goreleaser release --snapshot --skip-publish --rm-dist
