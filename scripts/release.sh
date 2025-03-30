@@ -7,6 +7,9 @@ read -p "Enter the version number: " version
 echo "Generating changelog..."
 git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..HEAD > changelog.txt
 
+# Change to gin-frontend directory
+cd gin-frontend
+
 # Install goreleaser
 echo "Installing goreleaser..."
 go install github.com/goreleaser/goreleaser@latest
