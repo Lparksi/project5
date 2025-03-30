@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 project_name: gin-frontend
 
@@ -17,23 +17,36 @@ builds:
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
+    ignore:
+      - goos: windows
+        goarch: arm64
 
 archives:
   - format: binary
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    name_template: >-
+      {{- .ProjectName }}_{{- if .IsSnapshot }}snapshot{{- else }}{{- .Version }}{{- end }}_
+      {{- .Os }}_{{- .Arch }}
+    files: []
 
 checksum:
   name_template: "checksums.txt"
+  algorithm: sha256
 
 release:
+  mode: replace
   prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
   github:
+    owner: "{{.Env.GITHUB_REPOSITORY_OWNER}}"
+    name: "{{.Env.GITHUB_REPOSITORY}}"
     draft: false
     prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
 
 changelog:
+  use: github
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
+      - Merge pull request
+      - Merge branch

@@ -47,6 +47,7 @@ jobs:
               exit 1
             fi
             git tag ${{ github.event.inputs.version }}
+            git push origin ${{ github.event.inputs.version }}
           else
             echo "Error: Version is required for release/prerelease mode"
             exit 1
@@ -56,7 +57,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: v1.26.2
+          version: latest  # 使用最新版本以支持 version: 2
           args: >-
             ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
             'release --clean' }}
