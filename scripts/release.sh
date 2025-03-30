@@ -1,27 +1,24 @@
 #!/bin/bash
 
-# Prompt for version
-read -p "Enter the version number: " version
+# 如果没有提供版本号，使用默认版本
+version=${VERSION:-"0.1.0"}
+version_tag="v${version}"
 
-# Generate changelog
+# 切换到 gin-frontend 目录
+cd gin-frontend || exit 1
+
+# 确保有 git 标签
+if [ -z "$(git tag -l)" ]; then
+    echo "Creating initial tag ${version_tag}..."
+    git tag ${version_tag}
+fi
+
+# 生成 changelog
 echo "Generating changelog..."
 git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..HEAD > changelog.txt
 
-# Change to gin-frontend directory
-cd gin-frontend
-
-# Install goreleaser
-echo "Installing goreleaser..."
-go install github.com/goreleaser/goreleaser@latest
-
-# Run goreleaser
+# 运行 goreleaser
 echo "Running goreleaser..."
-goreleaser release --snapshot --skip-publish --rm-dist
+goreleaser release --clean
 
-# List compiled binaries with checksums
-echo "Listing compiled binaries with checksums..."
-find dist -type f -name "*.tar.gz" -o -name "*.zip" | while read -r file; do
-    echo -e "### $file\n\`\`\`\n$(sha256sum "$file" | awk '{print $1}')\n\`\`\`\n" >> binaries.md
-done
-
-echo "Release script completed. Changelog saved to changelog.txt and binaries list with checksums saved to binaries.md."
+echo "Release process completed. Changelog saved to changelog.txt"
