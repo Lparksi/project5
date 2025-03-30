@@ -32,6 +32,7 @@ checksum:
   algorithm: sha256
 
 release:
+  skip: true
   mode: replace
   draft: false
   prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
