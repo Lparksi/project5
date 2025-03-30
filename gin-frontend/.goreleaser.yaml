@@ -36,6 +36,9 @@ release:
   mode: replace
   draft: false
   prerelease: "{{ .Tag | contains `-rc` || .Tag | contains `-beta` || .Tag | contains `-alpha` }}"
+  hooks:
+    pre:
+      - git tag -f "{{ .Tag }}" $(git rev-parse HEAD)
 
 changelog:
   use: github
