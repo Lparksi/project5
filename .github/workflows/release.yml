@@ -57,7 +57,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: ~> v1.24  # 使用 1.24+ 版本，支持 version 2
+          version: v1.27.0  # 更新到支持 configuration version: 2 的版本
           args: >-
             ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
             'release --clean' }}
