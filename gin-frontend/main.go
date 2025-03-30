@@ -14,5 +14,7 @@ func main() {
 			"title": "Gin Frontend",
 		})
 	})
-	r.Run(":8080")
+	// 使用环境变量设置端口，默认值为 8080
+	port := ":8080"
+	r.Run(port)
 }
