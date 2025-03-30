@@ -1,6 +1,8 @@
 archives:
   - format: binary    # 使用二进制格式，不进行压缩
     name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - ./gin-frontend  # 确保只包含二进制文件
     
 builds:
   - binary: "{{ .ProjectName }}"
