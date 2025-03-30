@@ -50,7 +50,7 @@ jobs:
             if git rev-parse "${{ github.event.inputs.version }}" >/dev/null 2>&1; then
               echo "Warning: Tag ${{ github.event.inputs.version }} already exists. Skipping tag creation."
             else
-              git tag ${{ github.event.inputs.version }}
+              git tag -a ${{ github.event.inputs.version }} -m "Release ${{ github.event.inputs.version }}"
               git push origin ${{ github.event.inputs.version }}
             fi
           else
