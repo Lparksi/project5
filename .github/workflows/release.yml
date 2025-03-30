@@ -57,7 +57,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: v1.45.2  # 更新为一个存在的可用版本
+          version: v2.8.1  # 更新为 v2.8.1，确保支持配置文件 version: 2
           args: >-
             ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot' ||
             'release --clean' }}
