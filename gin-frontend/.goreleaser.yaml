@@ -15,3 +15,6 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=0
+
+release:
+  prerelease: "{{ .Tag | contains `-rc` }}"  # 如果标签包含 `-rc`，标记为预发布

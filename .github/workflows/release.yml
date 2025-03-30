@@ -86,7 +86,6 @@ jobs:
           version: v1.26.2
           args: >-
             ${{ github.event.inputs.release_type == 'build-only' && 'build --snapshot --output gin-frontend/dist/' ||
-            github.event.inputs.release_type == 'prerelease' && 'release --clean --prerelease' ||
             'release --clean' }}
           workdir: gin-frontend
         env:
